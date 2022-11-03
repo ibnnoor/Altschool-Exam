@@ -1,0 +1,23 @@
+---
+- hosts: servers
+  become: yes
+
+  vars_files:
+    - vars/main.yml
+
+  roles:
+    - { role: geerlingguy.mysql }
+
+  tasks:
+    - name: Create a database user Toyyib
+      mysql_user:
+        name: Toyyib
+        password: Oliyide123
+        priv: '*.*:ALL,GRANT'
+        state: present
+    - name: Create a test database
+      mysql_db:
+        name: Toyyib
+        state: present
+
+      

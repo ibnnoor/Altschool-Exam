@@ -1,0 +1,10 @@
+---
+- hosts: servers
+  become: yes
+
+  tasks:
+    - name: Install postgresql
+      script:
+        cmd: ~/ansible/postgresqlinstall.sh
+    
+      

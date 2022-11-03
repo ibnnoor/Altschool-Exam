@@ -1,0 +1,18 @@
+---
+- hosts: servers
+  become: yes
+  
+  tasks:
+  - name: Change permissions
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: sudo chown -R www-data.www-data . && sudo chmod -R 755 . && sudo chmod -R 777 .
+  - name: Run composer
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: export COMPOSER_ALLOW_SUPERUSER=1 && composer install
+  - name: RUn composer create project
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: export COMPOSER_ALLOW_SUPERUSER=1 && composer create-project
+

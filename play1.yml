@@ -1,0 +1,83 @@
+---
+- hosts: servers
+  become: yes
+
+
+  tasks:
+  - name: Install Apache Server
+    apt:
+      name: apache2
+      state: latest
+            
+
+
+  - name: Install packages
+    apt:
+      name: "{{ item }}"
+      state: latest
+    vars:
+      item:
+        - wget
+        - ufw
+        - git
+        - mcrypt
+        - lsb-release
+        - ca-certificates
+        - apt-transport-https
+        - software-properties-common
+        - gnupg2
+
+  - name: Adding a sury repository to apt
+    shell:
+      cmd: sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+ 
+  - name: Download and add the gpg key
+    shell:
+      cmd: echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
+
+
+  - name: Update apt repository
+    apt:
+      update_cache: true
+      upgrade: dist
+      cache_valid_time: 3600
+      force_apt_get: true
+
+  - name: Installing php 8.1 and its dependencies
+    apt:
+      name: "{{ item }}"
+      state: present
+    vars:
+      item:
+        - php8.1
+        - libapache2-mod-php
+        - php8.1-mysql
+        - php8.1-common
+        - php8.1-xml
+        - php8.1-xmlrpc
+        - php8.1-curl
+        - php8.1-gd
+        - php8.1-imagick
+        - php8.1-cli
+        - php8.1-dev
+        - php8.1-imap
+        - php8.1-mbstring
+        - php8.1-opcache
+        - php8.1-soap
+        - php8.1-zip
+        - php8.1-intl
+
+  - name: Install composer
+    shell:
+      cmd: php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - name: Install composer
+    shell:
+      cmd: php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  - name: Install composer
+    shell:
+      cmd: php composer-setup.php && php -r "unlink('composer-setup.php');"           
+
+  - name: Move composer.phar
+    shell:
+      cmd: mv composer.phar /usr/local/bin/composer
+ 

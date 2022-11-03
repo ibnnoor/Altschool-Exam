@@ -1,0 +1,135 @@
+---
+- hosts: servers
+  become: yes
+  
+
+  tasks:
+  - name: Clone the git repository
+    git:
+      repo: https://github.com/f1amy/laravel-realworld-example-app.git
+      dest: /var/www/html/laravel-repo
+      clone: yes
+      update: yes
+
+  - name: Rename .env.example file
+    command:
+      cmd: mv /var/www/html/laravel-repo/.env.example /var/www/html/laravel-repo/.env
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_URL'
+      line: DB_URL=http://206.189.23.42
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_PORT'
+      line: DB_PORT=3306
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_USERNAME'
+      line: DB_USERNAME=Toyyib
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_HOST'
+      line: DB_HOST=127.0.0.1
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_DATABASE'
+      line: DB_DATABASE=Toyyib
+
+  - name: Edit the .env file
+    lineinfile:
+      path: /var/www/html/laravel-repo/.env
+      regexp: '^DB_PASSWORD'
+      line: DB_PASSWORD=Oliyide123
+
+
+  - name: Create apacheconfig file
+    blockinfile:
+      path: /etc/apache2/sites-available/laravel.conf
+      create: yes
+      state: present
+      block: |
+        <VirtualHost *:80>
+          ServerAdmin oliyidetoyyib2000@gmail.com
+          ServerName oliyidetoyyib.me
+          ServerAlias www.oliyidetoyyib.me
+          DocumentRoot /var/www/html/laravel-repo/public
+
+        <Directory /var/www/html/laravel-repo/public>
+          Options Indexes FollowSymLinks MultiViews
+          AllowOverride ALl
+          allow from all
+          Require all granted
+        </Directory>
+          ErrorLog ${APACHE_LOG_DIR}/error.log
+          CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        </VirtualHost>
+
+  - name: Enabling laravel.conf
+    shell:
+      chdir: /etc/apache2/sites-available
+      cmd: a2dissite 000-default.conf && a2ensite laravel.conf
+  
+  - name: Restarting apache web server
+    shell:
+      cmd: systemctl restart apache2
+
+  - name: Uncommenting the function in web.php
+    blockinfile:
+      path: /var/www/html//laravel-repo/routes/web.php
+      state: present
+      insertafter: EOF
+      block: |
+        Route::get('/', function () {
+            return view('welcome');
+        });
+
+
+  - name: Setting hostname
+    command:
+      cmd: hostnamectl set-hostname oliyidetoyyib.me
+
+  - name: Setting transient hostname
+    command:
+      cmd: hostnamectl set-hostname oliyidetoyyib.me --transient
+
+  - name: Setting pretty hostname
+    command:
+      cmd: hostnamectl set-hostname "Toyyib's server" --pretty
+
+  - name: Setting timezone
+    command:
+      cmd: timedatectl set-timezone Africa/Lagos
+
+  - name: Editting /etc/hosts file
+    lineinfile:
+      path: /etc/hosts
+      state: present
+      insertafter: '^localhost'
+      line: 206.189.23.42 oliyidetoyyib.me server
+
+
+
+  - name: Changing permissions
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: sudo chown -R www-data.www-data . && sudo chmod -R 755 . && sudo chmod -R 777 .
+  - name: Running composer
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: export COMPOSER_ALLOW_SUPERUSER=1 && composer install
+  - name: Running composer create project
+    shell:
+      chdir: /var/www/html/laravel-repo
+      cmd: export COMPOSER_ALLOW_SUPERUSER=1 && composer create-project
+
