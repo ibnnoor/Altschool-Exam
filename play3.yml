@@ -19,7 +19,7 @@
     lineinfile:
       path: /var/www/html/laravel-repo/.env
       regexp: '^DB_URL'
-      line: DB_URL=http://206.189.23.42
+      line: DB_URL=http://161.35.25.113
 
   - name: Edit the .env file
     lineinfile:
@@ -60,8 +60,8 @@
       block: |
         <VirtualHost *:80>
           ServerAdmin oliyidetoyyib2000@gmail.com
-          ServerName oliyidetoyyib.me
-          ServerAlias www.oliyidetoyyib.me
+          ServerName oliyidetoyyib.live
+          ServerAlias www.oliyidetoyyib.live
           DocumentRoot /var/www/html/laravel-repo/public
 
         <Directory /var/www/html/laravel-repo/public>
@@ -75,16 +75,16 @@
 
         </VirtualHost>
 
-  - name: Enabling laravel.conf
+  - name: Enable laravel.conf
     shell:
       chdir: /etc/apache2/sites-available
       cmd: a2dissite 000-default.conf && a2ensite laravel.conf
   
-  - name: Restarting apache web server
+  - name: Restart apache web server
     shell:
       cmd: systemctl restart apache2
 
-  - name: Uncommenting the function in web.php
+  - name: Uncomment the function in web.php
     blockinfile:
       path: /var/www/html//laravel-repo/routes/web.php
       state: present
@@ -95,32 +95,32 @@
         });
 
 
-  - name: Setting hostname
+  - name: Set hostname
     command:
-      cmd: hostnamectl set-hostname oliyidetoyyib.me
+      cmd: hostnamectl set-hostname oliyidetoyyib.live
 
-  - name: Setting transient hostname
+  - name: Set transient hostname
     command:
-      cmd: hostnamectl set-hostname oliyidetoyyib.me --transient
+      cmd: hostnamectl set-hostname oliyidetoyyib.live --transient
 
-  - name: Setting pretty hostname
+  - name: Set pretty hostname
     command:
       cmd: hostnamectl set-hostname "Toyyib's server" --pretty
 
-  - name: Setting timezone
+  - name: Set timezone
     command:
       cmd: timedatectl set-timezone Africa/Lagos
 
-  - name: Editting /etc/hosts file
+  - name: Edit /etc/hosts file
     lineinfile:
       path: /etc/hosts
       state: present
       insertafter: '^localhost'
-      line: 206.189.23.42 oliyidetoyyib.me server
+      line: 161.35.25.113 oliyidetoyyib.live server
 
 
 
-  - name: Changing permissions
+  - name: Change permissions
     shell:
       chdir: /var/www/html/laravel-repo
       cmd: sudo chown -R www-data.www-data . && sudo chmod -R 755 . && sudo chmod -R 777 .
