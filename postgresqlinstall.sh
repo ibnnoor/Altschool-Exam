@@ -18,5 +18,16 @@ sudo apt update -y >> $logfile
 sudo apt install ${packages[@]} -y >> $logfile
 
 
+#Switching to postgres user
+su - postgres
+
+#Creating a user
+createuser toyyib
+
+#Creating a test database
+createdb test_db
+
+
+
 
 
