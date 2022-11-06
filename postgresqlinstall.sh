@@ -1,9 +1,22 @@
 #!/usr/bin/bash
 
-#Updating apt
-sudo apt update
+#Creating variables that will be used during installation
 
-#Installing postgresql
-sudo apt install postgresql postgresql-contrib -y
+echo "Creating variables for use through the installation process"
+packages=('postgresql' 'postgresql-contrib')
+
+#sysuser is the default postgresql user"
+sysuser='postgres'
+
+# $logfile is the log file for the installation
+logfile='psqlinstall-log'
+
+#Updating apt
+sudo apt update -y >> $logfile
+
+#Installing postgresql packages
+sudo apt install ${packages[@]} -y >> $logfile
+
+
 
 
