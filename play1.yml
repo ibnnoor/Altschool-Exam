@@ -7,6 +7,7 @@
   - name: Install Apache Server
     apt:
       name: apache2
+      update_cache: yes
       state: latest
             
 
@@ -27,7 +28,7 @@
         - software-properties-common
         - gnupg2
 
-  - name: Adding a sury repository to apt
+  - name: Add a sury repository to apt
     shell:
       cmd: sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
  
@@ -39,14 +40,14 @@
   - name: Update apt repository
     apt:
       update_cache: true
-      upgrade: dist
       cache_valid_time: 3600
       force_apt_get: true
 
-  - name: Installing php 8.1 and its dependencies
+  - name: Install php 8.1 and its dependencies
     apt:
       name: "{{ item }}"
       state: present
+      update_cache: yes
     vars:
       item:
         - php8.1
