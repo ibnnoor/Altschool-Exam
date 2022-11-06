@@ -4,7 +4,6 @@
 
   tasks:
     - name: Install postgresql
-      script:
-        cmd: ~/ansible/postgresqlinstall.sh
+      script: ~/ansible/postgresqlinstall.sh
     
       
